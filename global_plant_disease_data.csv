@@ -1,0 +1,49 @@
+country,state,latitude,longitude,plant,disease,spread_level
+India,Punjab,31.1471,75.3412,Wheat,Leaf Rust,High
+India,Tamil Nadu,11.1271,78.6569,Rice,Bacterial Leaf Blight,Medium
+India,Maharashtra,19.7515,75.7139,Cotton,Bollworm,High
+India,Kerala,10.8505,76.2711,Banana,Panama Wilt,High
+India,Karnataka,15.3173,75.7139,Tomato,Early Blight,Low
+USA,California,36.7783,-119.4179,Grapes,Powdery Mildew,High
+USA,Texas,31.9686,-99.9018,Cotton,Bacterial Blight,Medium
+USA,Florida,27.6648,-81.5158,Orange,Citrus Canker,High
+USA,Illinois,40.6331,-89.3985,Corn,Northern Corn Leaf Blight,Medium
+Brazil,São Paulo,-23.5505,-46.6333,Coffee,Coffee Leaf Rust,High
+Brazil,Paraná,-25.2521,-52.0215,Soybean,Asian Soybean Rust,High
+Brazil,Mato Grosso,-12.6819,-56.9211,Cotton,Angular Leaf Spot,Medium
+China,Hubei,30.9756,112.2707,Rice,Sheath Blight,High
+China,Henan,34.7657,113.7532,Wheat,Stripe Rust,Medium
+China,Shandong,36.3427,118.1498,Maize,Downy Mildew,High
+Nigeria,Kaduna,10.5105,7.4165,Maize,Maize Streak Virus,High
+Nigeria,Lagos,6.5244,3.3792,Rice,Leaf Spot,Medium
+Nigeria,Kano,12.0022,8.5919,Sorghum,Anthracnose,High
+Australia,Queensland,-20.9176,142.7028,Sugarcane,Ratoon Stunting Disease,High
+Australia,New South Wales,-31.2532,146.9211,Wheat,Yellow Spot,Medium
+Australia,Victoria,-37.4713,144.7852,Barley,Net Blotch,Low
+France,Occitanie,43.6047,1.4442,Grapes,Downy Mildew,High
+France,Normandy,49.1829,-0.3707,Apple,Apple Scab,Medium
+Germany,Bavaria,48.7904,11.4979,Barley,Leaf Rust,Medium
+Germany,Saxony,51.1045,13.2017,Wheat,Fusarium Head Blight,High
+Kenya,Nairobi,-1.2921,36.8219,Maize,Gray Leaf Spot,High
+Kenya,Mombasa,-4.0435,39.6682,Tea,Tea Blight,Medium
+Japan,Hokkaido,43.2203,142.8635,Rice,Rice Blast,Medium
+Japan,Honshu,36.2048,138.2529,Wheat,Take-all,High
+Canada,Ontario,51.2538,-85.3232,Canola,Blackleg,Low
+Canada,Alberta,53.9333,-116.5765,Wheat,Leaf Rust,Medium
+Mexico,Jalisco,20.6597,-103.3496,Corn,Northern Corn Leaf Blight,High
+Mexico,Chiapas,16.7569,-93.1131,Coffee,Coffee Berry Disease,High
+India,Punjab,31.1471,75.3412,Wheat,Leaf Rust,High
+India,Haryana,29.0588,76.0856,Rice,Bacterial Leaf Blight,Medium
+India,Uttar Pradesh,26.8467,80.9462,Sugarcane,Red Rot,High
+India,Maharashtra,19.7515,75.7139,Cotton,Bollworm,High
+India,Tamil Nadu,11.1271,78.6569,Rice,Bacterial Leaf Blight,Medium
+India,Kerala,10.8505,76.2711,Banana,Panama Wilt,High
+India,Andhra Pradesh,15.9129,79.74,Groundnut,Leaf Spot,Medium
+India,Karnataka,15.3173,75.7139,Tomato,Early Blight,Low
+India,West Bengal,22.9868,87.855,Rice,Sheath Blight,High
+India,Gujarat,22.2587,71.1924,Cotton,Leaf Curl Virus,Medium
+India,Madhya Pradesh,23.4733,77.947,Soybean,Rust,High
+India,Rajasthan,27.0238,74.2179,Mustard,White Rust,Low
+India,Bihar,25.0961,85.3131,Maize,Downy Mildew,Medium
+India,Odisha,20.9517,85.0985,Paddy,Brown Spot,High
+India,Assam,26.2006,92.9376,Tea,Blister Blight,Medium
