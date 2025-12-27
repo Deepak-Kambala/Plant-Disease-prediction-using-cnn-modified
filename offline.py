@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import streamlit.components.v1 as components
 import tensorflow as tf
@@ -11,14 +12,6 @@ import requests
 import json
 from offline_translations import OFFLINE_TRANSLATIONS, OFFLINE_DATA
 
-
-# Try to import Google Generative AI - handle if not available
-try:
-    import google.generativeai as genai
-    GENAI_AVAILABLE = True
-except ImportError:
-    GENAI_AVAILABLE = False
-
 # ------------------------------
 # Internet connectivity check
 # ------------------------------
@@ -30,20 +23,43 @@ def check_internet_connection():
         return False
 
 # ------------------------------
-# Initialize Google GenAI client
+# Google Generative AI Initialization (Local & Render compatible)
 # ------------------------------
+def get_gemini_api_key():
+    """
+    Fetch GEMINI API key from Streamlit secrets (local) or Render secret file.
+    """
+    if "GEMINI_API_KEY" in st.secrets:
+        return st.secrets["GEMINI_API_KEY"]
+
+    secret_file_path = "/etc/secrets/GEMINI_API_KEY.txt"
+    if os.path.exists(secret_file_path):
+        with open(secret_file_path, "r") as f:
+            return f.read().strip()
+
+    return None
+
 def initialize_genai_client():
+    """
+    Initialize the Google Generative AI client if available and online.
+    Returns None if client cannot be initialized.
+    """
+    try:
+        import google.generativeai as genai
+        GENAI_AVAILABLE = True
+    except ImportError:
+        GENAI_AVAILABLE = False
+        return None
+
     if GENAI_AVAILABLE and check_internet_connection():
-        try:
-            import os
-            api_key = os.environ.get("GEMINI_API_KEY")
-            if api_key:
-               genai.configure(api_key=api_key)
-  
-            model = genai.GenerativeModel("gemini-2.5-flash")
-            return model
-        except Exception:
-            return None
+        api_key = get_gemini_api_key()
+        if api_key:
+            try:
+                genai.configure(api_key=api_key)
+                model = genai.GenerativeModel("gemini-2.5-flash")
+                return model
+            except Exception:
+                return None
     return None
 
 # ------------------------------
@@ -111,7 +127,6 @@ if st.sidebar.button("🔄 Check Connection"):
     st.session_state.genai_client = initialize_genai_client()
     st.experimental_rerun()
 
-
 # ------------------------------
 # Global Plant Disease Map Page
 # ------------------------------
@@ -122,17 +137,11 @@ if app_mode == "Global Disease Map":
     Use the layer control (top-right corner) to change map view.
     """)
 
-    # Load dataset
     df = pd.read_csv("global_plant_disease_data.csv")
-
-    # Map type selection
     map_type = st.sidebar.selectbox("Select Map Type", ["Default", "OpenStreetMap"], key="map_type")
-
-    # Tile selection
     tiles_dict = {"Default": "CartoDB positron", "OpenStreetMap": "OpenStreetMap"}
     m = folium.Map(location=[20, 0], zoom_start=2, tiles=tiles_dict[map_type])
 
-    # Feature groups
     low_spread = folium.FeatureGroup(name="Low Spread", show=True)
     medium_spread = folium.FeatureGroup(name="Medium Spread", show=True)
     high_spread = folium.FeatureGroup(name="High Spread", show=True)
@@ -143,7 +152,6 @@ if app_mode == "Global Disease Map":
             else "orange" if row["spread_level"] == "Medium"
             else "red"
         )
-
         marker = folium.CircleMarker(
             location=[row["latitude"], row["longitude"]],
             radius=8,
@@ -156,7 +164,6 @@ if app_mode == "Global Disease Map":
             ),
             tooltip=f"{row['state']}, {row['country']} — {row['disease']}"
         )
-
         if row["spread_level"] == "Low":
             low_spread.add_child(marker)
         elif row["spread_level"] == "Medium":
@@ -169,7 +176,6 @@ if app_mode == "Global Disease Map":
     high_spread.add_to(m)
     folium.LayerControl(collapsed=False).add_to(m)
 
-    # Legend
     legend_html = """
     <div style="
         position: fixed; 
@@ -189,8 +195,6 @@ if app_mode == "Global Disease Map":
     </div>
     """
     m.get_root().html.add_child(folium.Element(legend_html))
-
-    # Display the map
     st_folium(m, width=1200, height=700)
 
 # ------------------------------
@@ -230,13 +234,10 @@ elif app_mode == "About":
 # ------------------------------
 elif app_mode == "Disease Recognition":
     st.header("🩺 Disease Recognition")
-
-    # Upload image
     uploaded_file = st.file_uploader("Choose an Image:", type=["jpg", "jpeg", "png"])
     if uploaded_file:
         st.session_state.uploaded_file = uploaded_file
 
-    # Predict button
     if st.session_state.uploaded_file:
         col1, col2 = st.columns([1, 1])
         with col1:
@@ -270,6 +271,14 @@ elif app_mode == "Disease Recognition":
                     st.session_state.translated_prediction = None
                     st.session_state.chat_messages = []
                     st.session_state.offline_precautions_shown = False
+
+    # ------------------------------
+    # Language Selection, Translation, Precautions, Chat
+    # ------------------------------
+    # ... (keep your existing language selection, translation, offline precautions, and chat code)
+    # This part remains unchanged; it will work automatically with the new GenAI initialization.
+
+
 
     # ------------------------------
     # Language Selection
