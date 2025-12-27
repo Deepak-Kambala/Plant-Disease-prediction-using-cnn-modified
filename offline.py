@@ -35,7 +35,11 @@ def check_internet_connection():
 def initialize_genai_client():
     if GENAI_AVAILABLE and check_internet_connection():
         try:
-            genai.configure(api_key=st.secrets["GEMINI_API_KEY"])  
+            import os
+            api_key = os.environ.get("GEMINI_API_KEY")
+            if api_key:
+               genai.configure(api_key=api_key)
+  
             model = genai.GenerativeModel("gemini-2.5-flash")
             return model
         except Exception:
