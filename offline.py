@@ -11,8 +11,9 @@ import requests
 import json
 from offline_translations import OFFLINE_TRANSLATIONS, OFFLINE_DATA
 
-
-# Try to import Google Generative AI - handle if not available
+# ------------------------------
+# Try to import Google Generative AI
+# ------------------------------
 try:
     import google.generativeai as genai
     GENAI_AVAILABLE = True
@@ -35,12 +36,8 @@ def check_internet_connection():
 def initialize_genai_client():
     if GENAI_AVAILABLE and check_internet_connection():
         try:
-            import os
-            api_key = os.environ.get("GEMINI_API_KEY")
-            if api_key:
-               genai.configure(api_key=api_key)
-  
-            model = genai.GenerativeModel("gemini-2.5-flash")
+            genai.configure(api_key=st.secrets["GEMINI_API_KEY"])  
+            model = genai.GenerativeModel("gemini-1.5-flash")
             return model
         except Exception:
             return None
@@ -111,7 +108,6 @@ if st.sidebar.button("🔄 Check Connection"):
     st.session_state.genai_client = initialize_genai_client()
     st.experimental_rerun()
 
-
 # ------------------------------
 # Global Plant Disease Map Page
 # ------------------------------
@@ -122,28 +118,17 @@ if app_mode == "Global Disease Map":
     Use the layer control (top-right corner) to change map view.
     """)
 
-    # Load dataset
     df = pd.read_csv("global_plant_disease_data.csv")
-
-    # Map type selection
     map_type = st.sidebar.selectbox("Select Map Type", ["Default", "OpenStreetMap"], key="map_type")
-
-    # Tile selection
     tiles_dict = {"Default": "CartoDB positron", "OpenStreetMap": "OpenStreetMap"}
     m = folium.Map(location=[20, 0], zoom_start=2, tiles=tiles_dict[map_type])
 
-    # Feature groups
     low_spread = folium.FeatureGroup(name="Low Spread", show=True)
     medium_spread = folium.FeatureGroup(name="Medium Spread", show=True)
     high_spread = folium.FeatureGroup(name="High Spread", show=True)
 
     for _, row in df.iterrows():
-        color = (
-            "green" if row["spread_level"] == "Low"
-            else "orange" if row["spread_level"] == "Medium"
-            else "red"
-        )
-
+        color = "green" if row["spread_level"] == "Low" else "orange" if row["spread_level"] == "Medium" else "red"
         marker = folium.CircleMarker(
             location=[row["latitude"], row["longitude"]],
             radius=8,
@@ -156,7 +141,6 @@ if app_mode == "Global Disease Map":
             ),
             tooltip=f"{row['state']}, {row['country']} — {row['disease']}"
         )
-
         if row["spread_level"] == "Low":
             low_spread.add_child(marker)
         elif row["spread_level"] == "Medium":
@@ -169,7 +153,6 @@ if app_mode == "Global Disease Map":
     high_spread.add_to(m)
     folium.LayerControl(collapsed=False).add_to(m)
 
-    # Legend
     legend_html = """
     <div style="
         position: fixed; 
@@ -189,8 +172,6 @@ if app_mode == "Global Disease Map":
     </div>
     """
     m.get_root().html.add_child(folium.Element(legend_html))
-
-    # Display the map
     st_folium(m, width=1200, height=700)
 
 # ------------------------------
@@ -198,10 +179,9 @@ if app_mode == "Global Disease Map":
 # ------------------------------
 elif app_mode == "Home":
     st.header("🌿 Plant Disease Recognition System")
-    st.image("home_page.jpeg", use_column_width=True)
+    st.video("https://youtu.be/Zw7dGLWzaXk")
     st.markdown("""
     Welcome to the Plant Disease Recognition System!  
-    Upload an image of a plant, and our system will detect any signs of disease.
 
     **Features:**
     - 🌐 **Online Mode:** Full chat functionality with AI assistant  
@@ -230,13 +210,17 @@ elif app_mode == "About":
 # ------------------------------
 elif app_mode == "Disease Recognition":
     st.header("🩺 Disease Recognition")
-
-    # Upload image
+    
+    # Allow both file upload and camera capture
     uploaded_file = st.file_uploader("Choose an Image:", type=["jpg", "jpeg", "png"])
-    if uploaded_file:
+    captured_image = st.camera_input("Or take a picture with your camera")
+    
+    # Give priority to captured image
+    if captured_image:
+        st.session_state.uploaded_file = captured_image
+    elif uploaded_file:
         st.session_state.uploaded_file = uploaded_file
 
-    # Predict button
     if st.session_state.uploaded_file:
         col1, col2 = st.columns([1, 1])
         with col1:
@@ -271,10 +255,11 @@ elif app_mode == "Disease Recognition":
                     st.session_state.chat_messages = []
                     st.session_state.offline_precautions_shown = False
 
-    # ------------------------------
-    # Language Selection
-    # ------------------------------
-    if st.session_state.predicted_disease:
+
+# ------------------------------
+# Full code continues with language selection, translations, offline precautions, and chat interface
+# ------------------------------
+
         if st.session_state.preferred_language is None:
             st.markdown("### 🌐 Select Your Preferred Language")
             cols = st.columns(8)
